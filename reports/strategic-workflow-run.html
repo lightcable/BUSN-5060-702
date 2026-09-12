@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Strategic Workflow — Run Report</title><style>
+:root { --bg:#f6f8fb; --panel:#ffffff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --accent:#2563eb; --accent2:#0f766e; }
+* { box-sizing: border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
+header { background:linear-gradient(135deg,#1e3a8a,#0f766e); color:#fff; padding:1.4rem 1.5rem; }
+header h1 { margin:0 0 .3rem; font-size:1.3rem; }
+header p { margin:0; opacity:.85; font-size:.9rem; }
+.meta { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+.chip { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:.15rem .7rem; font-size:.8rem; }
+main { max-width:960px; margin:1.2rem auto; padding:0 1rem 3rem; }
+section { margin-bottom:1.5rem; }
+h2 { font-size:1.05rem; border-bottom:2px solid var(--border); padding-bottom:.35rem; }
+details.node { background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:.6rem; overflow:hidden; }
+details.node summary { cursor:pointer; padding:.6rem .9rem; display:flex; justify-content:space-between; align-items:center; font-weight:600; }
+details.node summary:hover { background:#f1f5f9; }
+.node-name { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+.count { color:var(--muted); font-size:.78rem; font-weight:500; }
+details.node table { width:100%; border-collapse:collapse; font-size:.85rem; }
+details.node td { border-top:1px solid var(--border); padding:.5rem .9rem; vertical-align:top; }
+td.key { width:190px; color:var(--accent); font-weight:600; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+td.val code { display:block; white-space:pre-wrap; word-break:break-word; color:#334155; font-size:.8rem; }
+.empty { color:var(--muted); font-size:.85rem; }
+.notices { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:.8rem 1rem; }
+.notices h2 { border:none; margin:0 0 .5rem; font-size:.95rem; color:#92400e; }
+.notice { margin:.3rem 0; font-size:.88rem; }
+.notice .tag { display:inline-block; background:#f59e0b; color:#fff; border-radius:6px; padding:0 .5rem; font-size:.72rem; font-weight:700; margin-right:.4rem; }
+.final { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1rem 1.2rem; }
+.final-block { margin-top:.8rem; }
+.final-block h3 { color:var(--accent2); font-size:.95rem; margin:.4rem 0; }
+.md h4 { margin:.8rem 0 .3rem; color:#1e3a8a; }
+.md h3 { margin:.8rem 0 .3rem; color:#1e3a8a; }
+.md p { margin:.4rem 0; line-height:1.5; }
+.md ul { margin:.4rem 0 .4rem 1.2rem; padding:0; }
+.md li { margin:.2rem 0; line-height:1.45; }
+.md code { background:#f1f5f9; border-radius:4px; padding:.05rem .3rem; font-size:.88em; }
+/* Markdown tables (e.g. side-by-side comparison matrices) */
+.table-wrap { overflow-x:auto; margin:.7rem 0; }
+.md-table { border-collapse:collapse; width:100%; font-size:.82rem; }
+.md-table th, .md-table td { border:1px solid #cbd5e1; padding:.45rem .6rem; vertical-align:top; text-align:left; }
+.md-table thead th { background:#0f766e; color:#fff; position:sticky; top:0; font-weight:600; white-space:nowrap; }
+.md-table tbody tr:nth-child(even) { background:#f8fafc; }
+.md-table tbody tr:hover { background:#f0fdfa; }
+.md-table td:first-child { font-weight:600; color:#0f172a; }
+.errors pre { background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:1rem; white-space:pre-wrap; font-size:.82rem; }
+.question pre { background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:1rem; white-space:pre-wrap; font-size:.88rem; color:#1e3a8a; }
+.constraints pre { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:1rem; white-space:pre-wrap; font-size:.88rem; color:#92400e; }
+.attentions pre { background:#f0fdfa; border:1px solid #5eead4; border-radius:10px; padding:1rem; white-space:pre-wrap; font-size:.88rem; color:#115e59; }
+.materials pre { background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1rem; white-space:pre-wrap; font-size:.82rem; color:#334155; }
+.models table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; font-size:.88rem; }
+.models th { background:#f0fdfa; text-align:left; }
+.models th, .models td { border-bottom:1px solid var(--border); padding:.5rem .9rem; }
+.models code { background:#f1f5f9; border-radius:4px; padding:.05rem .4rem; }
+footer { color:var(--muted); font-size:.8rem; text-align:center; padding:1rem; }
+</style></head><body><header><h1>Strategic Workflow — Run Report</h1><p>python main.py · 2026-09-10 20:42:00</p><div class="meta"><span class="chip">21 node sections</span><span class="chip">2 notices</span><span class="chip">duration: 1294.27s</span><span class="chip">started: 2026-09-10 20:20:26</span><span class="chip">input tokens: 165282</span><span class="chip">output tokens: 110587</span><span class="chip">total tokens: 275869</span><span class="chip">llm calls: 13</span><span class="chip">est. cost: $0.650375</span><span class="chip">decisions: yes</span><span class="chip">options: yes</span></div></header><main><section class="question"><h2>Strategic Question</h2><pre>Our company is a cable company operating an MVNO mobile service in the United States. What competitive advantages should we consider to compete with established mobile carriers by leveraging our rich landline assets? Also, what AI technologies can cable companies consider adopting in terms of technology, customer experience, and operations to strengthen their position? Does partnering with low Earth orbit (LEO) satellite operators such as Starlink bring any long-term advantages?</pre></section><section class="attentions"><h2>Attentions</h2><pre>The short-term goal is to identify cable operators&#x27; weaknesses and retain customers. Improving customer relationships must take priority over fighting a price war. Examine the pros and cons of converging mobile and broadband services, and broadband and streaming serivces.</pre></section><section class="constraints"><h2>Strategic Constraints</h2><pre>The strategies must take cash flow, earnings, and regulatory considerations into account.</pre></section><section class="materials"><h2>Research Materials</h2><pre>https://www.streamtvinsider.com/sponsored/super-bundling-revolutionizing-subscriber-economy-consumers-and-telcos
+https://developingtelecoms.com/subscription-bundling-for-telcos-new-report-from-bango.html
+https://bangoinvestor.com/strategy
+https://www.parksassociates.com/blogs/in-the-news/parks-prime-video-has-lowest-churn-rate?page=783
+https://www.analysysmason.com/research/content/articles/fmc-financial-benefits-rdcs0/
+https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/reducing-churn-in-telecom-through-advanced-analytics
+https://www.xgnglobal.com/5g-broadcasting-atsc30
+https://www.gsertel.com/5gbroadcast-over-atsc3
+https://www.verizon.com/about/news/verizon-delivers-record-2q26-results
+https://investor.t-mobile.com/static-files/19e97e8f-de79-4c42-98a4-f48182b23d21
+https://about.att.com/story/2026/2q-earnings.html
+https://s21.q4cdn.com/184289198/files/doc_financials/2026/q2/SpaceX-Reports-Second-Quarter-2026-Results.pdf
+https://investors.optimum.com/news-events/press-releases/detail/239/optimum-reports-second-quarter-2026-results
+https://ir.charter.com/news-releases/news-release-details/charter-announces-second-quarter-2026-results
+https://www.cmcsa.com/news-releases/news-release-details/comcast-reports-2nd-quarter-2026-results
+https://www.pwc.com/gx/en/industries/tmt/telecommunications/ai-performance.html</pre></section><section class="models"><h2>AI Models (reference)</h2><table><thead><tr><th>Agent</th><th>Model</th></tr></thead><tbody><tr><td>orchestrator_plan</td><td><code>kimi-k3</code></td></tr><tr><td>researcher</td><td><code>deepseek-reasoner</code></td></tr><tr><td>synthesizer</td><td><code>kimi-k3</code></td></tr><tr><td>fact_check</td><td><code>deepseek-reasoner</code></td></tr><tr><td>critic</td><td><code>kimi-k3</code></td></tr><tr><td>competitor</td><td><code>deepseek-reasoner</code></td></tr><tr><td>arbiter</td><td><code>gemini-flash-lite-latest</code></td></tr><tr><td>human_review</td><td><code>n/a (no LLM call)</code></td></tr></tbody></table></section><section class="notices"><h2>Run notices</h2><div class="notice"><span class="tag">HUMAN REVIEW</span> Workflow paused for approval.</div><div class="notice"><span class="tag">DEMO</span> Auto-approving the decision to complete the run...</div></section><section class="execution"><h2>Execution</h2><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">research_domains</td><td class="val"><code>[&#x27;Cable MVNO competitive positioning and fixed-mobile convergence strategy leveraging landline network assets&#x27;, &#x27;Customer retention, churn drivers, and relationship-based strategies for cable operator...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>research...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">researcher</span><span class="count">3 field(s)</span></summary><table><tr><td class="key">research_reports</td><td class="val"><code>{&#x27;Cable MVNO competitive positioning and fixed-mobile convergence strategy leveraging landline network assets&#x27;: {&#x27;domain&#x27;: &#x27;Cable MVNO competitive positioning and fixed-mobile convergence strategy lev...</code></td></tr><tr><td class="key">research_complete</td><td class="val"><code>True...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>synthesis...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">synthesizer</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">synthesis</td><td class="val"><code>{&#x27;options&#x27;: &#x27;# Strategic Synthesis: Cable MVNO Competitive Strategy\n\n## Cross-Domain Consensus (what all five research streams agree on)\n\nBefore presenting options, four findings are robust across...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>fact_check...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">fact_check</span><span class="count">3 field(s)</span></summary><table><tr><td class="key">fact_check</td><td class="val"><code>{&#x27;fact_check&#x27;: &#x27;**Evidence-base note:** All five research reports explicitly state that live web search failed, internal documents were unavailable, and the case reference URLs were not retrieved. The...</code></td></tr><tr><td class="key">fact_check_iterations</td><td class="val"><code>1...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>synthesis...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">synthesizer</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">synthesis</td><td class="val"><code>{&#x27;options&#x27;: &#x27;# Strategic Options: Cable MVNO Competitive Positioning\n\n**Revision note:** This synthesis corrects the failures identified in fact-checking. All five research reports relied on unretri...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>fact_check...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">fact_check</span><span class="count">3 field(s)</span></summary><table><tr><td class="key">fact_check</td><td class="val"><code>{&#x27;fact_check&#x27;: &#x27;**Evidence caveat:** All five research reports explicitly state that web retrieval failed and internal search was unavailable (`DDGS: No results found`; `./internal_docs` not found). T...</code></td></tr><tr><td class="key">fact_check_iterations</td><td class="val"><code>2...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>critique...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">critic</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">critique</td><td class="val"><code>{&#x27;critique&#x27;: &#x27;# Strategic Critique: Cable MVNO Options\n\nA note on method first: this document has been heavily hedged, which fixes the *fabrication* problem but not the *logic* problem. Hedged weak ...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>competitor...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">competitor</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">simulations</td><td class="val"><code>{&#x27;simulations&#x27;: &#x27;Assumption: the client is a large cable operator with an MVNO hosted by a major MNO. If it is mid-size (Cox/Altice-scale), competitor attention is lower, but supplier leverage is wors...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>arbitration...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">arbiter</span><span class="count">2 field(s)</span></summary><table><tr><td class="key">decisions</td><td class="val"><code>{&#x27;decisions&#x27;: &#x27;**Arbiter Decision:**\n\n### Option 1 — Retention Fortress\n**Decision:** **PARTIAL**\n**Rationale:** Option 1 addresses experiential churn drivers and relies on low initial capital, fi...</code></td></tr><tr><td class="key">current_phase</td><td class="val"><code>human_review...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">orchestrator_plan</span><span class="count">0 field(s)</span></summary><p class="empty">(no fields)</p></details><details class="node" open><summary><span class="node-name">human_review</span><span class="count">1 field(s)</span></summary><table><tr><td class="key">current_phase</td><td class="val"><code>done...</code></td></tr></table></details><details class="node" open><summary><span class="node-name">agent_models</span><span class="count">8 field(s)</span></summary><table><tr><td class="key">orchestrator_plan</td><td class="val"><code>kimi-k3</code></td></tr><tr><td class="key">researcher</td><td class="val"><code>deepseek-reasoner</code></td></tr><tr><td class="key">synthesizer</td><td class="val"><code>kimi-k3</code></td></tr><tr><td class="key">fact_check</td><td class="val"><code>deepseek-reasoner</code></td></tr><tr><td class="key">critic</td><td class="val"><code>kimi-k3</code></td></tr><tr><td class="key">competitor</td><td class="val"><code>deepseek-reasoner</code></td></tr><tr><td class="key">arbiter</td><td class="val"><code>gemini-flash-lite-latest</code></td></tr><tr><td class="key">human_review</td><td class="val"><code>n/a (no LLM call)</code></td></tr></table></details><details class="node" open><summary><span class="node-name">token_usage</span><span class="count">14 field(s)</span></summary><table><tr><td class="key">input_tokens</td><td class="val"><code>165282</code></td></tr><tr><td class="key">output_tokens</td><td class="val"><code>110587</code></td></tr><tr><td class="key">total_tokens</td><td class="val"><code>275869</code></td></tr><tr><td class="key">llm_calls</td><td class="val"><code>13</code></td></tr><tr><td class="key">kimi_input_tokens</td><td class="val"><code>80033</code></td></tr><tr><td class="key">kimi_output_tokens</td><td class="val"><code>26858</code></td></tr><tr><td class="key">kimi_estimated_cost_usd</td><td class="val"><code>0.426880</code></td></tr><tr><td class="key">pro_input_tokens</td><td class="val"><code>73791</code></td></tr><tr><td class="key">pro_output_tokens</td><td class="val"><code>83033</code></td></tr><tr><td class="key">pro_estimated_cost_usd</td><td class="val"><code>0.222427</code></td></tr><tr><td class="key">gemini_input_tokens</td><td class="val"><code>11458</code></td></tr><tr><td class="key">gemini_output_tokens</td><td class="val"><code>696</code></td></tr><tr><td class="key">gemini_estimated_cost_usd</td><td class="val"><code>0.001068</code></td></tr><tr><td class="key">estimated_cost_usd</td><td class="val"><code>0.650375</code></td></tr></table></details><details class="node" open><summary><span class="node-name">run_info</span><span class="count">3 field(s)</span></summary><table><tr><td class="key">started_at</td><td class="val"><code>2026-09-10 20:20:26</code></td></tr><tr><td class="key">finished_at</td><td class="val"><code>2026-09-10 20:42:00</code></td></tr><tr><td class="key">elapsed_seconds</td><td class="val"><code>1294.27</code></td></tr></table></details></section><section class="final"><h2>Final Recommendation</h2><div class="final-block"><h3>Decisions</h3><div class="md"><p><strong>Arbiter Decision:</strong></p>
+<h4>Option 1 — Retention Fortress</h4>
+<p><strong>Decision:</strong> <strong>PARTIAL</strong></p>
+<p><strong>Rationale:</strong> Option 1 addresses experiential churn drivers and relies on low initial capital, fitting the short-term defensive mandate. However, it commits capital to experience repair before diagnosing whether FWA share losses are primarily driven by price or packaging (Gate 5), risking expensive execution against the wrong root cause.</p>
+<p><strong>Revision Requirements:</strong> (1) Explicitly tie pilot deployment to Gate 5 findings; (2) use uplift modeling with control holdouts rather than basic churn propensity scores to eliminate wasted save offers; (3) scope the data unification effort to a realistic opex pilot tier with measurable data-estate milestones.</p>
+<h4>Option 2 — Converged Household Value Play</h4>
+<p><strong>Decision:</strong> <strong>PARTIAL</strong></p>
+<p><strong>Rationale:</strong> Convergence is essential for long-term customer stickiness, but the underlying LTV and subsidy calculations depend on unverified compounded assumptions and potential selection bias. Scaling device subsidies and bundles without a proven, causal churn delta risks significant near-term margin dilution and adverse selection.</p>
+<p><strong>Revision Requirements:</strong> (1) Implement a rigorous quasi-experimental identification strategy (e.g., randomized pricing/marketing experiments or diff-in-diff) for Gate 1 to eliminate selection bias; (2) establish strict contribution-margin floors and unit-level payback guardrails before expanding device-financing books.</p>
+<h4>Option 3 — Plant as Platform</h4>
+<p><strong>Decision:</strong> <strong>PARTIAL</strong></p>
+<p><strong>Rationale:</strong> Monetizing sunk infrastructure via wholesale transport, edge hosting, and LEO ground-segment connectivity creates potential option value. However, demand-side evidence is currently an unproven hypothesis, and the risk of unintentionally subsidizing FWA attackers or overinvesting in late-cycle backhaul is high.</p>
+<p><strong>Revision Requirements:</strong> (1) Strictly gate all capex behind signed, binding customer contracts (no speculative builds); (2) focus pilot RFIs exclusively on neutral hosts, LEO operators, and enterprise buyers while walling off FWA competitors to prevent harming core MVNO leverage.</p>
+<h4>Option 4 — Resilience &amp; Reach Overlay (LEO)</h4>
+<p><strong>Decision:</strong> <strong>PARTIAL</strong></p>
+<p><strong>Rationale:</strong> A LEO overlay offers valuable enterprise backup and resilience capabilities, and treating it as a guarded, non-residential pilot prevents premature capital drain. However, structural dependencies on host MNOs for direct-to-cell (D2C) and unverified wholesale economics mean the partnership posture remains highly vulnerable.</p>
+<p><strong>Revision Requirements:</strong> (1) Restrict pilots strictly to enterprise/SMB resilience bundles outside the core footprint; (2) enforce strict contract terms including price protection, take-or-pay caps, and short durations; (3) complete a formal regulatory and spectrum review regarding SCS compliance before signing any pilot agreement.</p>
+<h4>Option 5 — Scale Bet (Contingency Only)</h4>
+<p><strong>Decision:</strong> <strong>PARTIAL</strong></p>
+<p><strong>Rationale:</strong> Holding a national scale/spectrum bet as a dormant contingency preserves strategic optionality without straining the balance sheet in the near term. However, defining triggers around lagging indicators (like hostile MVNO renewals) creates dangerous operational latency if market windows close before activation.</p>
+<p><strong>Revision Requirements:</strong> (1) Establish leading, quantitative trigger metrics with designated monitoring owners rather than lagging qualitative thresholds; (2) maintain the option strictly off the balance sheet while periodically auditing market and regulatory feasibility.</p></div></div><div class="final-block"><h3>Strategic Options</h3><div class="md"><h3>Strategic Options: Cable MVNO Competitive Positioning</h3>
+<p><strong>Revision note:</strong> This synthesis corrects the failures identified in fact-checking. All five research reports relied on unretrieved sources and no internal data, so: (1) every quantitative figure below is labeled an <strong>unverified estimate</strong>; (2) absolute claims have been removed or hedged — most notably, Wi-Fi/landline offload is <strong>not exclusive to cable</strong> (external evidence confirms small ISPs share the same fundamental advantage); (3) strategic inferences are labeled <strong>[Judgment]</strong> and separated from evidence; (4) unresolved questions are routed to explicit <strong>validation gates</strong> rather than asserted as facts.</p>
+<p><strong>Evidence legend:</strong></p>
+<ul>
+<li><strong>[Consensus–D]</strong> = directional consensus across research reports; sources unretrieved, so directional only</li>
+<li><strong>[Estimate–U]</strong> = unverified illustrative figure</li>
+<li><strong>[Judgment]</strong> = my strategic inference, not evidence</li>
+<li><strong>[Open Q]</strong> = confirmed data gap requiring validation</li>
+</ul>
+<p>---</p>
+<h3>Landline Asset → Advantage Map (answers the core question; grounds Options 2–4)</h3>
+<div class="table-wrap"><table class="md-table"><thead><tr><th>Asset</th><th>Potential advantage</th><th>Defensibility (honest assessment)</th></tr></thead><tbody><tr><td>HFC/fiber plant + Wi-Fi estate</td><td>Mobile traffic offload → lower wholesale cost per GB</td><td><strong>Scale-based, not exclusive.</strong> Small ISPs share the same offload concept [corrected per fact-check]. Cable&#x27;s edge is footprint density and hotspot scale (~20M+ hotspots is an [Estimate–U]).</td></tr><tr><td>Fiber to poles/strand, headends, rights-of-way</td><td>Wholesale backhaul, small-cell transport, edge hosting, LEO ground-segment connectivity</td><td>Demand-side evidence absent — treat as hypothesis to test via RFI [Open Q].</td></tr><tr><td>Billing relationship with tens of millions of households</td><td>Low incremental mobile acquisition cost; single-bill stickiness</td><td>[Consensus–D]; &quot;~30M households&quot; is [Estimate–U]; &quot;near-zero CAC&quot; is an overstatement — say <em>low</em>.</td></tr><tr><td>Field workforce + local retail</td><td>Same-day service, in-home remediation, &quot;save&quot; capability</td><td>[Consensus–D]; replicable in principle, slow in practice.</td></tr><tr><td>Household usage/viewing/QoE data</td><td>AI retention models, addressable advertising</td><td>[Consensus–D]; constrained by CPNI/privacy law.</td></tr><tr><td>CBRS PALs / C-band spectrum</td><td>Offload capacity, private 5G, possible SCS spectrum leasing</td><td>Regulatory status of SCS leasing unverified [Open Q].</td></tr></tbody></table></div>
+<p>---</p>
+<h3>Option 1 — Retention Fortress</h3>
+<p><em>Fix the experiential weaknesses driving broadband churn and deploy AI where it can measurably pay for itself — before any growth spending.</em></p>
+<p><strong>Core rationale</strong></p>
+<ul>
+<li>[Consensus–D] The primary external threat is <strong>Fixed Wireless Access</strong> attacking broadband — the profit pool — not postpaid wireless. External snippets corroborate FWA &quot;winning net new customer&quot; reports.</li>
+<li>[Consensus–D] Cable&#x27;s churn drivers are experiential: care friction, billing opacity, repeat truck rolls, reactive service. <em>Primary satisfaction data was not provided</em> — this is asserted, not verified.</li>
+<li>[Judgment] A price war does not repair any experiential churn driver and risks eroding the broadband margin that funds everything else. This option is the only one that directly serves the stated short-term mandate and requires the least new capital.</li>
+<li>AI candidates, mapped to the user&#x27;s three domains (all ROI figures in research are [Estimate–U]; pilot with control groups):</li>
+</ul>
+<div class="table-wrap"><table class="md-table"><thead><tr><th>Domain</th><th>Use cases</th></tr></thead><tbody><tr><td><strong>Technology</strong></td><td>Predictive HFC/DOCSIS maintenance; capacity/build prioritization; Wi-Fi QoE steering; SIM-swap/fraud detection; energy optimization</td></tr><tr><td><strong>Customer experience</strong></td><td>Churn propensity + next-best-action; proactive outage notification with automatic credit; agent-assist copilots; personalized bundle recommendation</td></tr><tr><td><strong>Operations</strong></td><td>Dispatch/routing optimization; revenue assurance; inventory forecasting; RAG-based knowledge management</td></tr></tbody></table></div>
+<p><strong>Key actions</strong></p>
+<p>1. Churn propensity pilot with <strong>holdout groups</strong> — measure the save, don&#x27;t model it.</p>
+<p>2. Proactive care: network-event detection → customer notification → automatic credit on top call-driver categories.</p>
+<p>3. Pricing hygiene: fee transparency, simplified plans, tenure-based price locks (relationship moves, not discounts).</p>
+<p>4. Hybrid conversational AI with a <strong>guaranteed human-escalation path</strong> (automation-backlash risk is asserted in research, not independently verified).</p>
+<p>5. FWA loss root-cause diagnostic: price vs. packaging vs. sales motion vs. install experience [Open Q — flagged across reports as the most important undiagnosed problem].</p>
+<p><strong>Major risks</strong></p>
+<ul>
+<li>AI ROI benchmarks (20–40% call deflection; $100–250 per truck roll) are [Estimate–U] with no company-specific evidence.</li>
+<li>Fragmented data estate throttles model value [Consensus–D].</li>
+<li>CPNI, state privacy/AI-law compliance costs [Consensus–D as obligation; cost unverified].</li>
+<li>Retention slows losses but generates no gross adds [Judgment]; FWA net-add pressure continues meanwhile.</li>
+</ul>
+<p><strong>Resources/capabilities needed</strong></p>
+<p>Unified customer data foundation with consent controls; data science + care-ops redesign; billing-system integration; AI governance framework; modest pilot budget funded from opex, not capex.</p>
+<p><strong>Success metrics</strong> <em>(measured vs. control, not modeled)</em></p>
+<p>Churn delta on targeted cohorts; save rate; repeat truck-roll rate; first-contact resolution; cost per contact; CSAT/NPS trend; per-use-case payback (12–24-month target is a benchmark, unverified).</p>
+<p>---</p>
+<h3>Option 2 — Converged Household Value Play</h3>
+<p><em>Make the mobile + broadband + streaming bundle harder to leave — positioned on value, simplicity, and QoE, not price.</em></p>
+<p><strong>Core rationale</strong></p>
+<ul>
+<li>[Consensus–D] Converged households churn less than single-product households; the frequently cited &quot;30–50% lower churn&quot; is <strong>directional, not verified</strong> [Open Q — must be measured via matched-cohort analysis before scaling subsidies].</li>
+<li>[Consensus–D framing] Mobile is best modeled as a <strong>retention instrument attached to broadband economics</strong>, not a profit engine. The supporting figures (mobile contribution ~$5–12/line vs. broadband ~$45–55/household; converged LTV uplift ~$1,600–2,200; justified subsidy ~$400–700) are all <strong>[Estimate–U]</strong>.</li>
+<li>[Corrected] Wi-Fi-first offload lowers wholesale cost per GB, but this is <strong>not</strong> a unique advantage — it is a <em>scale</em> advantage shared in concept with small ISPs.</li>
+<li>[Consensus–D] Streaming aggregation works as a retention layer; the &quot;low-churn anchor&quot; concept (e.g., Prime Video per Parks Associates) rests on an <strong>unretrieved reference</strong>.</li>
+</ul>
+<p><strong>Convergence pros/cons (as required by the brief)</strong></p>
+<div class="table-wrap"><table class="md-table"><thead><tr><th></th><th>Mobile + Broadband</th><th>Broadband + Streaming</th></tr></thead><tbody><tr><td><strong>Pros</strong></td><td>Lower household churn [Consensus–D, magnitude unverified]; higher revenue/household; low incremental CAC; offload improves unit economics; candidate counter to FWA (not the <em>only</em> one — corrected)</td><td>Stickiness and perceived value; shifts video from fixed carriage cost toward rev-share; addressable-ad upside; lower CPE capex</td></tr><tr><td><strong>Cons</strong></td><td>Blended margin dilution even if absolute dollars rise [Consensus–D, unmodeled]; wholesale host is simultaneously the FWA attacker [supported directionally]; churn contagion; device-financing working-capital drag; tying/labels/USF scrutiny</td><td>Thin aggregation margins; streamer disintermediation; content cost inflation; does not fix the core FWA problem [Judgment]</td></tr></tbody></table></div>
+<p><strong>Key actions</strong></p>
+<p>1. <strong>Gate first:</strong> matched-cohort churn analysis sizes the true convergence benefit; subsidy levels follow the measurement, not the benchmark.</p>
+<p>2. Wi-Fi-first offload optimization; measure offload % (RF study) [Open Q].</p>
+<p>3. Value-framed bundle: one bill, whole-home QoE guarantee, transparent price; opt-in streaming tiers with revenue-share structures, contribution-margin floors, and exit triggers.</p>
+<p>4. BYOD incentives and device leasing to limit working-capital drag.</p>
+<p>5. Renegotiate MVNO terms toward volume tiers and offload-linked pricing where possible [actual rate card unknown — Open Q].</p>
+<p><strong>Major risks</strong></p>
+<p>If the measured churn delta is small, the entire subsidy case collapses; margin-mix optics with investors; handset credit losses; regulatory exposure on bundling/labels/USF reform.</p>
+<p><strong>Resources/capabilities needed</strong></p>
+<p>Bundle P&amp;L transparency; converged billing/care; streaming partnership capability; device-financing program; investor reporting on revenue-per-household rather than standalone mobile margin.</p>
+<p><strong>Success metrics</strong></p>
+<p>Measured converged-vs-non-converged churn delta; revenue per household; bundle penetration; measured offload %; per-line mobile contribution from the actual contract; device-financing FCF impact.</p>
+<p>---</p>
+<h3>Option 3 — Plant as Platform</h3>
+<p><em>Sell transport, small-cell backhaul, edge hosting, and LEO ground-segment connectivity to carriers, tower companies, and satellite operators.</em></p>
+<p><strong>Core rationale</strong></p>
+<ul>
+<li>[Judgment/hypothesis] Cable&#x27;s fiber-to-pole, strand, headends, and rights-of-way <em>could</em> serve third-party demand and monetize sunk capex. <strong>Fact-check correction:</strong> no demand-side evidence was provided; claims that MNOs &quot;desperately need&quot; these assets or that wholesale backhaul is definitively &quot;high-margin&quot; are unproven. Treat as a market hypothesis to be tested with RFIs, not a plan assumption.</li>
+<li>[Judgment] Wholesale relationships <em>may</em> create reciprocal leverage in MVNO renewal negotiations — plausible, but there is no contract or negotiation evidence.</li>
+</ul>
+<p><strong>Key actions</strong></p>
+<p>1. Inventory marketable assets and grade them by marketability.</p>
+<p>2. Issue RFIs/pilot wholesale offers to MNOs, neutral hosts, and tower companies.</p>
+<p>3. Pitch ground-segment/backhaul connectivity to <strong>multiple</strong> LEO constellations — optionality without dependency.</p>
+<p>4. Gate all incremental capex behind signed contracts.</p>
+<p><strong>Major risks</strong></p>
+<ul>
+<li><strong>Arming the enemy:</strong> buyers may include the FWA attackers [Consensus–D as risk assertion, unquantified].</li>
+<li>Long enterprise/wholesale sales cycles; revenue likely modest relative to the core P&amp;L [Judgment].</li>
+<li>Edge-compute capex with uncertain payback; pole-attachment and privacy regulatory exposure.</li>
+</ul>
+<p><strong>Resources/capabilities needed</strong></p>
+<p>Wholesale commercial team; network inventory data; legal/regulatory support; strictly gated capex.</p>
+<p><strong>Success metrics</strong></p>
+<p>Signed wholesale revenue and gross margin; contract tenor; % of incremental capex covered by signed contracts; any measurable improvement in MVNO renewal terms attributable to the relationship.</p>
+<p>---</p>
+<h3>Option 4 — Resilience &amp; Reach Overlay (Selective LEO)</h3>
+<p><em>Non-exclusive, guard-railed LEO partnerships for enterprise resilience, rural backhaul, and genuine coverage gaps — never as a headline residential product inside the served footprint.</em></p>
+<p><strong>Core rationale</strong></p>
+<ul>
+<li>[Consensus–D] LEO is complementary in niches: enterprise/government backup, disaster recovery, remote cell-site backhaul, unserved edge. The partner is simultaneously a rural broadband competitor, and direct-to-cell is a <em>long-run structural risk to the MVNO model itself</em> [consensus assertion; no primary SpaceX/D2C data retrieved].</li>
+<li><strong>Supported as a data-gap finding:</strong> LEO capacity pricing, QoS terms, and unit economics are unavailable — <strong>partnership ROI cannot currently be underwritten</strong>. Any long-term advantage is conditional and unproven.</li>
+<li>FCC SCS rules may enable leasing underused cable spectrum to satellite operators — regulatory status and terms unverified [Open Q — confirm with counsel].</li>
+</ul>
+<p><strong>Key actions</strong></p>
+<p>1. Due-diligence pack before any signature: capacity pricing, QoS floors, D2C roadmap exposure, SCS posture, interference coordination.</p>
+<p>2. Pilot enterprise/SMB resilience bundles (fiber + mobile + satellite backup).</p>
+<p>3. Multi-vendor posture (include at least one non-ISP constellation such as AST/Kuiper alongside Starlink).</p>
+<p>4. Contract guardrails: non-exclusive, short duration, price protection, take-or-pay caps, termination rights, and segmentation restrictions keeping LEO resale out of the core footprint.</p>
+<p>5. Annual re-review against D2C maturity — the verdict could flip.</p>
+<p><strong>Major risks</strong></p>
+<p>Partner-as-competitor; D2C disintermediation of the mobile business over time; contract asymmetry favoring the LEO operator; enterprise sales-capability gap; regulatory fluidity; attention diverted from the core retention fight.</p>
+<p><strong>Resources/capabilities needed</strong></p>
+<p>Satellite/RF expertise; enterprise sales motion; regulatory counsel; small, gated pilot budget.</p>
+<p><strong>Success metrics</strong></p>
+<p>Pilot take rates and margins; enterprise attach rate and SLA performance; QoS vs. terrestrial; contract-term quality scorecard; measured cannibalization in pilot markets; decision-quality of the annual go/no-go review.</p>
+<p>---</p>
+<h3>Option 5 — Scale Bet (Contingency Only — Deprioritized)</h3>
+<p><em>Spectrum depth or facilities scale, realistically via M&amp;A, activated only if MVNO economics or the wholesale relationship materially deteriorate.</em></p>
+<p><strong>Core rationale</strong></p>
+<ul>
+<li>~3–4% national wireless share [Estimate–U] limits organic scale.</li>
+<li>National RAN ownership is capital-intensive (the cited ~$5–10B/year is <strong>[Estimate–U]</strong>) and <strong>appears</strong> incompatible with stated cash-flow, leverage, and buyback constraints — but this must be confirmed by internal FCF modeling, not assumed. (&quot;Never organic build&quot; was an unsupported absolute and is withdrawn.)</li>
+<li>[Judgment] Pursued now, this conflicts with the short-term retention mandate; held as a triggered contingency, it preserves strategic optionality.</li>
+</ul>
+<p><strong>Key actions</strong></p>
+<p>1. Define trigger conditions: hostile MVNO renewal, FWA share-loss threshold, D2C maturity milestone.</p>
+<p>2. Maintain a standing M&amp;A/spectrum option analysis; commit no capital in the base plan.</p>
+<p>3. Rank spectrum purchases behind reliability, offload, and AI investments [Judgment].</p>
+<p><strong>Major risks</strong></p>
+<p>Balance-sheet strain; merger-review conditions and timing; execution distraction; risk of morphing into share-buying (a disguised price war); all financials unverified.</p>
+<p><strong>Resources/capabilities needed</strong></p>
+<p>Corporate development; regulatory counsel; board-approved trigger framework.</p>
+<p><strong>Success metrics</strong></p>
+<p>Not applicable in base plan — track trigger indicators and option value maintained.</p>
+<p>---</p>
+<h3>Comparison Matrix <em>(all entries are [Judgment], not verified fact)</em></h3>
+<div class="table-wrap"><table class="md-table"><thead><tr><th></th><th>Time to impact</th><th>Cash-flow character</th><th>Earnings effect</th><th>Risk</th><th>Evidence strength</th><th>Fit with mandate</th></tr></thead><tbody><tr><td>1. Retention Fortress</td><td>3–12 mo</td><td>Self-funding if pilots validate</td><td>Opex reduction; protects core margin</td><td>Low–moderate</td><td>Moderate (directional)</td><td><strong>Highest</strong></td></tr><tr><td>2. Converged Value</td><td>6–24 mo</td><td>Margin-dilutive near term; gated by churn measurement</td><td>ARPH up, blended margin down</td><td>Moderate–high</td><td>Moderate</td><td>High (if value-led)</td></tr><tr><td>3. Plant as Platform</td><td>12–36 mo</td><td>Capex gated by contracts</td><td>Accretive if demand validates</td><td>Moderate</td><td><strong>Weak</strong> (hypothesis)</td><td>Medium</td></tr><tr><td>4. LEO Overlay</td><td>6–18 mo (pilots)</td><td>Small pilots; take-or-pay caps required</td><td>Niche margin; resilience value</td><td>Moderate–high (contract)</td><td>Weak on economics</td><td>Medium</td></tr><tr><td>5. Scale Bet</td><td>36+ mo</td><td>Major FCF strain</td><td>Transformational, either direction</td><td>High</td><td>Weak</td><td><strong>Low now</strong></td></tr></tbody></table></div>
+<p>---</p>
+<h3>Recommended Portfolio <em>(normative recommendation)</em></h3>
+<p><strong>Fund Option 1 now</strong> (0–6 months, opex-funded pilots with control groups). <strong>Admit Option 2 only through the cohort-analysis gate.</strong> Run <strong>Options 3 and 4 as small, contract-gated tests</strong> in parallel. Keep <strong>Option 5 dormant with defined triggers.</strong> Sequencing logic: measured savings from Option 1 fund the later moves, preserving cash flow and earnings flexibility [Judgment].</p>
+<h3>Validation Gates — Open Questions Before Capital Commitment <em>(supported as genuine gaps)</em></h3>
+<p>1. Measured converged-vs-non-converged churn delta (matched cohorts).</p>
+<p>2. Actual MVNO wholesale rate card and renewal terms.</p>
+<p>3. Achievable offload percentage (RF/engineering study).</p>
+<p>4. LEO capacity pricing, QoS floors, and term-sheet economics.</p>
+<p>5. FWA share-loss root-cause diagnosis.</p>
+<p>6. AI ROI measured against control groups, not vendor benchmarks.</p>
+<p>7. Regulatory status verification: SCS/spectrum-leasing rules, spectrum build-out deadlines, USF contribution reform, state AI/privacy statutes.</p>
+<p><strong>Bottom line:</strong> The research consensus supports a defense-first strategy — repair the experience, converge on value rather than price, test plant monetization and LEO as guarded experiments, and hold scale moves as contingencies. What the research does <em>not</em> support is any specific number. The five gates above are the difference between a strategy and a guess.</p></div></div></section></main><footer>Generated by the integrated <code>main.py</code> / <code>beautify-cli</code> report pipeline</footer></body></html>
