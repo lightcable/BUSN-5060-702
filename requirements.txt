@@ -1,0 +1,13 @@
+langgraph-cli>=0.4.31
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=1.6.0
+langchain-openai>=1.6.0
+langgraph-checkpoint>=4.2
+beautifulsoup4>=4.15
+ddgs>=9.16.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+requests
+# For VS Code debugging
+debugpy
