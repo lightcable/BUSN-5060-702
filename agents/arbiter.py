@@ -15,7 +15,8 @@ Your role is to evaluate strategic options against:
 4. Resilience to competitive responses
 
 For each option, decide: PASS, FAIL, or PARTIAL.
-Provide clear rationale.
+Provide clear rationale. Choose the option with the fewest barriers to success
+(Step 7 of the Seven Steps to Strategy Making).
 """,
             token_usage=token_usage,
             model_key=model_key,
@@ -37,6 +38,7 @@ For EACH option, provide:
 - Rationale (2-3 sentences)
 - If PARTIAL: specific revision requirements
 
+Then select the recommended option with the fewest barriers to success.
 Prioritize options with strong strategic fit, feasibility, and resilience.
 """
         response = self.invoke(prompt)

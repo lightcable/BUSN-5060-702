@@ -13,6 +13,9 @@ Your role is to:
 2. Challenge assumptions behind each strategic option
 3. Test for internal consistency across options
 4. Flag any fabricated evidence or dubious data
+5. Identify the Barriers to Choice — the Conditions for Success least likely to hold
+   for each option — and design the Tests that would resolve them. These are Steps 4-5
+   of the Seven Steps to Strategy Making.
 Be rigorous but constructive.
 """,
             token_usage=token_usage,
@@ -32,6 +35,8 @@ For each option, provide:
 2. The weakest assumption that needs validation
 3. Any data that contradicts the rationale
 4. Potential internal inconsistencies
+5. Barriers to Choice: the Conditions for Success least likely to hold, ranked
+6. Tests to Run: for each barrier, the concrete test or evidence that would resolve it
 
 Then provide an overall assessment.
 """

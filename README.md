@@ -4,8 +4,8 @@ A multi-agent strategic decision-making system that turns a high-level business
 question into research, strategic options, adversarial critique, competitive
 simulation, and a defensible recommendation — orchestrated as a state machine
 with [LangGraph](https://langchain-ai.github.io/langgraph/) and powered by
-configurable LLM providers (DeepSeek, Qwen, Kimi, and any OpenAI-compatible
-model), where **each role can use a different model**.
+configurable LLM providers (DeepSeek, Qwen, Kimi, Gemini, and any
+OpenAI-compatible model), where **each role can use a different model**.
 
 ## What It Does
 
@@ -36,6 +36,21 @@ The result is a full decision record: research reports → options → fact chec
 critique → simulations → final decisions. Token usage (input/output/total) is
 tracked across the whole run.
 
+## Strategy-Making Method: Seven Steps
+
+The pipeline follows the **"Seven Steps to Strategy Making"** from *Bringing Science to
+the Art of Strategy* (Lafley, Martin, Rivkin & Siggelkow, HBR 2012):
+
+| Step | Where the workflow does it |
+|------|----------------------------|
+| 1. Move from Issues to Choice | `CASE.md` frames the `Strategic Question`; the Orchestrator turns it into a decision and plans the research domains. |
+| 2. Generate Strategic Possibilities | Synthesizer produces 3–5 distinct strategic options. |
+| 3. Specify the Conditions for Success | Synthesizer states, per option, what must be true for it to succeed. |
+| 4. Identify the Barriers to Choice | Critic ranks the conditions least likely to hold. |
+| 5. Design Tests for the Barrier Conditions | Critic specifies the test that would resolve each barrier. |
+| 6. Conduct the Tests | Researcher (evidence), Fact Check (claims and conditions), and Competitor (stakeholder reactions) run the tests. |
+| 7. Make the Choice | Arbiter issues PASS/FAIL/PARTIAL per option and selects the option with the fewest barriers to success; Human Review approves. |
+
 ## Architecture
 
 ```
@@ -51,7 +66,7 @@ strategic_question
   Synthesizer ◀──────────────────┐
         │                        │
         ▼                        │
-  Fact Check ───── fail (≤2) ────┘
+  Fact Check ───── fails (≤2 retries) ────┘
         │
         │ pass
         ▼
@@ -115,7 +130,7 @@ review gate sits before finalization, and iterations are capped.
 ## Tech Stack
 
 - **LangGraph / LangChain** — workflow orchestration, state, and checkpoints
-- **Pluggable LLM providers** (DeepSeek, Qwen, Kimi, and any OpenAI-compatible API) — each agent role can use a different model, configured entirely in `.env`
+- **Pluggable LLM providers** (DeepSeek, Qwen, Kimi, Gemini, and any OpenAI-compatible API) — each agent role can use a different model, configured entirely in `.env`
 - **DuckDuckGo (`ddgs`)** — free, no-key web search for research
 - **Local keyword search** — dependency-free placeholder for internal document search
 - **Pydantic / python-dotenv** — config and environment management
@@ -127,13 +142,10 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file (see the keys used in `config.py`):
+Create a `.env` from the committed template and fill in your keys (all configuration is env-driven — `config.py` has no hardcoded parameters):
 
-```
-DEEPSEEK_API_KEY=your_key_here
-DEEPSEEK_MODEL=deepseek-chat
-DEEPSEEK_BASE_URL=https://api.deepseek.com/v1
-INTERNAL_DOCS_DIR=./internal_docs
+```bash
+cp .env.example .env
 ```
 
 ## Usage
@@ -148,21 +160,22 @@ python main.py --out out.html        # custom report path
 
 `python main.py` runs the full pipeline and, in one step, also beautifies its CLI
 output into a self-contained HTML report at
-`docs/cli-report/strategic-workflow-run.html`. By default it pauses at the
+`reports/strategic-workflow-run.html` (set `REPORTS_DIR` in `.env` to change the
+directory). By default it pauses at the
 human-review step and asks you to approve or request a revision; pass
 `--auto-approve` to skip that prompt. Pass `--auto-gen-graph` to also regenerate
-the workflow graph (`docs/graph-ui/strategic-workflow-graph.html`) via the
+the workflow graph (`reports/strategic-workflow-graph.html`) via the
 `graph-ui` skill.
 
 The case (question, attentions, constraints, and research materials) is defined
 in `CASE.md`. `main.py` reads it, composes the brief (question + attentions +
 constraints), and passes the research materials to the Researcher agents. If the
-`Strategic_Question` section is empty, `main.py` skips the run and reminds you to
+`Strategic Question` section is empty, `main.py` skips the run and reminds you to
 fill it in `CASE.md`.
 
 Token usage is tracked across the entire run: the CLI output ends with a
 `token_usage` summary (input/output/total tokens, LLM calls, and estimated
-cost) plus a `run_info` summary (start/end timestamp and elapsed seconds). The
+cost) plus a `run_info` summary (start/end timestamps and elapsed seconds). The
 HTML report shows these as header chips and node cards.
 
 Or programmatically:
@@ -205,7 +218,7 @@ Required:
 | Variable            | Purpose                          |
 | ------------------- | -------------------------------- |
 | `DEFAULT_MODEL`     | Profile used when an agent has no explicit assignment |
-| `MODEL_PROFILES`    | Comma list of model profiles, e.g. `deepseek,pro,qwen,kimi` |
+| `MODEL_PROFILES`    | Comma-separated list of model profiles, e.g. `deepseek,pro,qwen,kimi,gemini` |
 | `AGENT_MODELS`      | Agent→profile map, e.g. `orchestrator:kimi,synthesizer:kimi,...` |
 | `TEMPERATURE`       | LLM sampling temperature (non-reasoning models) |
 | `MAX_ITERATIONS`    | Max revision loops before review |
@@ -216,7 +229,7 @@ The case content is read from the file named by `CASE_FILE`, not from `.env`:
 
 | `CASE.md` section | Purpose |
 | ----------------- | ------- |
-| `Strategic_Question` | The question the agents answer |
+| `Strategic Question` | The question the agents answer |
 | `Attentions` | Business areas agents must pay attention to (folded into the brief) |
 | `Constraints` | Boundaries agents must respect (folded into the brief) |
 | `Research Materials` | Reference sources passed to the Researcher agents |
@@ -278,3 +291,9 @@ temperature to be omitted for that reasoning model.
   when internal documents are available.
 - Checkpointing currently uses in-memory `MemorySaver` (`memory/` is empty);
   switch to a durable checkpointer for production use.
+
+
+## Results
+
+- SKILLs output should go to `./reports`.
+- `main.py` output should go to `./reports`.

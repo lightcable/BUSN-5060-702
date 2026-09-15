@@ -153,6 +153,63 @@ class TestFactCheck(unittest.TestCase):
         self.assertEqual(out["current_phase"], "critique")
 
 
+class TestSevenSteps(unittest.TestCase):
+    """The workflow should explicitly produce the Seven Steps artifacts."""
+
+    def test_agent_prompts_embed_seven_steps(self):
+        from agents.synthesizer import SynthesizerAgent
+        from agents.critic import CriticAgent
+        from agents.competitor import CompetitorAgent
+        from agents.arbiter import ArbiterAgent
+        from agents.fact_checker import FactCheckAgent
+        with mock.patch("agents.base.create_llm", return_value=FakeLLM()):
+            synth = SynthesizerAgent()
+            crit = CriticAgent()
+            comp = CompetitorAgent()
+            arb = ArbiterAgent()
+            fact = FactCheckAgent()
+        # Step 3: conditions for success.
+        self.assertIn("Conditions for Success", synth.system_prompt)
+        # Steps 4-5: barriers and tests.
+        self.assertIn("Barriers to Choice", crit.system_prompt)
+        self.assertIn("Tests", crit.system_prompt)
+        # Step 6: simulations/fact-check are tests.
+        self.assertIn("test", comp.system_prompt.lower())
+        self.assertIn("test", fact.system_prompt.lower())
+        # Step 7: choose the option with the fewest barriers.
+        self.assertIn("fewest barriers", arb.system_prompt.lower())
+
+    def test_critic_prompt_requests_barriers_and_tests(self):
+        captured = {}
+
+        class RecordingLLM:
+            def invoke(self, messages):
+                captured["prompt"] = str(messages)
+                class R:
+                    content = "ok"
+                return R()
+
+        with mock.patch("agents.base.create_llm", return_value=RecordingLLM()):
+            from agents.critic import CriticAgent
+            CriticAgent().critique({"options": "o"}, {"d": "r"})
+        self.assertIn("Barriers to Choice", captured["prompt"])
+        self.assertIn("Tests to Run", captured["prompt"])
+
+
+class TestReportsDir(unittest.TestCase):
+    """Generated reports must default to the ./reports directory."""
+
+    def test_default_cli_report_is_under_reports(self):
+        from reporting import DEFAULT_OUT
+        self.assertEqual(DEFAULT_OUT.parent.name, "reports")
+        self.assertEqual(DEFAULT_OUT.name, "strategic-workflow-run.html")
+
+    def test_config_reports_dir(self):
+        import os
+        from config import Config
+        self.assertEqual(Config.REPORTS_DIR, os.getenv("REPORTS_DIR") or "reports")
+
+
 class TestSearchTools(unittest.TestCase):
     def test_module_imports_without_openai_key(self):
         # Import must succeed even when OPENAI_API_KEY is not set.

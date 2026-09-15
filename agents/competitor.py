@@ -13,6 +13,8 @@ Adopt the personas of:
 2. Customers - How would they react? What would they love/hate?
 3. Regulators - What concerns would they raise?
 4. Partners/Suppliers - How would they respond?
+Treat each simulation as a test (Step 6 of the Seven Steps to Strategy Making): probe
+whether the option's Conditions for Success would hold under each actor's reaction.
 Be realistic and specific.
 """,
             token_usage=token_usage,

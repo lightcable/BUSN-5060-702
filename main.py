@@ -7,8 +7,7 @@ Running ``python main.py`` does two things in one step:
    Critic → Competitor → Arbiter → Human review) and prints the final
    recommendation to the terminal.
 2. Captures that CLI output and beautifies it into a self-contained HTML report
-   (``docs/cli-report/strategic-workflow-run.html``) via the shared
-   ``reporting`` module.
+   (``reports/strategic-workflow-run.html``) via the shared ``reporting`` module.
 
 Flags:
     --out PATH            Write the HTML report to PATH.
@@ -49,12 +48,13 @@ class Tee:
 
 def main(argv=None):
     """Run the workflow and, unless disabled, write the HTML report."""
+    default_out = Path(Config.REPORTS_DIR) / "strategic-workflow-run.html"
     parser = argparse.ArgumentParser(
         description="Run the strategic workflow and write an HTML report."
     )
     parser.add_argument(
         "--out",
-        help="HTML report output path (default: docs/cli-report/strategic-workflow-run.html)",
+        help=f"HTML report output path (default: {default_out})",
     )
     parser.add_argument(
         "--no-report",
@@ -79,7 +79,7 @@ def main(argv=None):
     question = (Config.STRATEGIC_QUESTION or "").strip()
     if not question:
         print("No strategic question found in CASE.md.")
-        print("Please set the 'Strategic_Question' section in CASE.md and run again.")
+        print("Please set the 'Strategic Question' section in CASE.md and run again.")
         return
 
     attentions = (Config.STRATEGIC_ATTENTIONS or "").strip()
@@ -137,7 +137,7 @@ def main(argv=None):
         report_path = write_report(
             captured.getvalue(),
             source="python main.py",
-            out=args.out,
+            out=args.out or default_out,
             question=question,
             constraints=constraints,
             attentions=attentions,

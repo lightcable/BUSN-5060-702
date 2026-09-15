@@ -50,6 +50,8 @@ Your job is to verify the material factual claims behind each proposed option ag
 evidence provided, and to flag claims that are contradicted by public evidence or stated as
 unsupported absolutes (for example: "there is no proven evidence that X"). You are skeptical,
 evidence-driven, and precise, and you never invent sources.
+Treat this as a test (Steps 5-6 of the Seven Steps to Strategy Making): test the material
+claims and the option's Conditions for Success.
 """,
             token_usage=token_usage,
             model_key=model_key,

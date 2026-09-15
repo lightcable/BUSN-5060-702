@@ -2,7 +2,7 @@
 Loader for the project case file (``CASE.md``).
 
 ``CASE.md`` is the human-authored blueprint for a run: it states the study
-objectives and provides the ``Strategic_Question``, ``Attentions``,
+objectives and provides the ``Strategic Question``, ``Attentions``,
 ``Constraints``, and ``Research Materials`` sections that the agents consume.
 
 Sections are detected by Markdown headings (``##`` .. ``######``). Heading

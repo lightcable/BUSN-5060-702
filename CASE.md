@@ -1,16 +1,17 @@
 # Business Strategy Study
 
-Use a multi-agent workflow to research a strategic question. The workflow is defined in `./README.md`. Agents must answer the `Strategic Question` after completing the workflow. Agents must also read `Attentions` and `Constraints`. The `Attentions` section states what business areas the agents must pay attention to. The `Constraints` section states the boundaries agents must carefully take into consideration.
+Use a multi-agent workflow to research a strategic question. The workflow is defined in `./README.md`. Agents must answer the `Strategic Question` after completing the workflow. Agents must also read `Attentions` and `Constraints`. The `Attentions` section lists the business areas the agents must focus on. The `Constraints` section states the boundaries the agents must respect.
 
-The `Research Materials` section provides materials that agents can reference to help them draw conclusions.
+The `Research Materials` section lists reference sources the agents can consult to support their conclusions.
 
 ## Strategic Question
+The U.S. connectivity market is hyper-competitive and mature. Subscriber population growth has slowed significantly in recent years, so a new customer for one operator is likely a loss for another. To differentiate and attract customers, operators constantly experiment with technologies (e.g., FWA, LEO satellite, DOCSIS 4.0/FDX), pricing models (e.g., service bundling), service offerings, and subsidies (e.g., free phones and gift cards). 
 
-Our company is a cable company operating an MVNO mobile service in the United States. What competitive advantages should we consider to compete with established mobile carriers by leveraging our rich landline assets? Also, what AI technologies can cable companies consider adopting in terms of technology, customer experience, and operations to strengthen their position? Does partnering with low Earth orbit (LEO) satellite operators such as Starlink bring any long-term advantages?
+Our company is a cable company operating an MVNO mobile service in the United States. What competitive advantages should we consider to compete with established mobile carriers by leveraging our extensive landline assets? Also, what AI technologies can cable companies consider adopting in terms of network technology, customer experience, and operations to strengthen their position? Does partnering with low Earth orbit (LEO) satellite operators such as Starlink bring any long-term advantages?
 
 ## Attentions
 
-The short-term goal is to identify cable operators' weaknesses and retain customers. Improving customer relationships must take priority over fighting a price war. Examine the pros and cons of converging mobile and broadband services, and broadband and streaming services.
+The short-term goal is to identify cable operators' weaknesses and retain customers. Improving customer relationships must take priority over fighting a price war. Examine the pros and cons of converging mobile and broadband services, and broadband and streaming services. The long-term goal is to remain competitive while mobile network operators continue expanding fiber and FWA services.
 
 ## Constraints
 
@@ -37,4 +38,4 @@ https://www.pwc.com/gx/en/industries/tmt/telecommunications/ai-performance.html
 
 
 ## Project Blueprint
-Use the `AGENTS.md` defined in `.pi/`. The project must use it as a blueprint for development.
+Use the `.pi/AGENTS.md` file as a blueprint for development.
