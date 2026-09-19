@@ -9,7 +9,7 @@ and output tokens for every LLM call in the run.
 
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from config import Config
+from tools.config import Config
 
 
 class TokenUsage:

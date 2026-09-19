@@ -32,7 +32,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--out",
-        help="Output HTML path (default: docs/cli-report/strategic-workflow-run.html).",
+        help="Output HTML path (default: <REPORTS_DIR>/strategic-workflow-run.html).",
     )
     parser.add_argument(
         "--question",
@@ -45,8 +45,8 @@ def main(argv=None):
         sys.path.insert(0, str(root))
 
     # Import after sys.path is set so the shared module resolves from the repo.
-    from reporting import write_report
-    from config import Config
+    from tools.reporting import write_report
+    from tools.config import Config
 
     errors = ""
     if args.input:
@@ -66,7 +66,7 @@ def main(argv=None):
         errors = proc.stderr
         source = "live run: python main.py"
 
-    out = Path(args.out) if args.out else root / "docs" / "cli-report" / "strategic-workflow-run.html"
+    out = Path(args.out) if args.out else root / Config.REPORTS_DIR / "strategic-workflow-run.html"
     # Case sections come from CASE.md (via config) unless overridden.
     path = write_report(
         text,

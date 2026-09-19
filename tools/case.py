@@ -46,7 +46,11 @@ def load_case(path) -> dict:
         for line in case_path.read_text(encoding="utf-8").splitlines():
             match = _HEADING_RE.match(line)
             if match:
-                current = _canonical(match.group(1))
+                canonical_key = _canonical(match.group(1))
+                if canonical_key:
+                    current = canonical_key
+                elif current:
+                    sections[current].append(line)
                 continue
             if current:
                 sections[current].append(line)

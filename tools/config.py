@@ -14,7 +14,7 @@ import os
 
 from dotenv import load_dotenv
 
-from case import load_case
+from tools.case import load_case
 
 load_dotenv()
 
@@ -45,6 +45,9 @@ class Config:
     TEMPERATURE = float(_req("TEMPERATURE"))
     MAX_ITERATIONS = int(_req("MAX_ITERATIONS"))
     INTERNAL_DOCS_DIR = _req("INTERNAL_DOCS_DIR")
+
+    # Where generated HTML reports are written (defaults to ./reports).
+    REPORTS_DIR = _env("REPORTS_DIR") or "reports"
 
     # ---- Strategic inputs (read from the CASE.md file named by CASE_FILE) ----
     CASE_FILE = _req("CASE_FILE")

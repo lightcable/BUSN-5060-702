@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-import config as config_module
+from tools import config as config_module
 from agents.base import BaseAgent
 from agents.orchestrator import OrchestratorAgent
 from graph.workflow import StrategicWorkflow
@@ -200,13 +200,13 @@ class TestReportsDir(unittest.TestCase):
     """Generated reports must default to the ./reports directory."""
 
     def test_default_cli_report_is_under_reports(self):
-        from reporting import DEFAULT_OUT
+        from tools.reporting import DEFAULT_OUT
         self.assertEqual(DEFAULT_OUT.parent.name, "reports")
         self.assertEqual(DEFAULT_OUT.name, "strategic-workflow-run.html")
 
     def test_config_reports_dir(self):
         import os
-        from config import Config
+        from tools.config import Config
         self.assertEqual(Config.REPORTS_DIR, os.getenv("REPORTS_DIR") or "reports")
 
 

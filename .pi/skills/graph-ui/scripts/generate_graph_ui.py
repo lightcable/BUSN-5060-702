@@ -117,6 +117,23 @@ def find_repo_root():
     raise SystemExit("Could not locate repo root (graph/workflow.py not found)")
 
 
+def load_reports_dir(root):
+    """Return the configured reports directory (``REPORTS_DIR`` from .env).
+
+    Reads ``Config.REPORTS_DIR`` so this skill writes where ``main.py`` and the
+    other skills write. Falls back to ``"reports"`` when the project config/.env
+    is unavailable, so the skill still runs standalone.
+    """
+    try:
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from tools.config import Config
+
+        return Config.REPORTS_DIR
+    except Exception:
+        return "reports"
+
+
 def parse_workflow(source, orchestrator_source):
     """Extract nodes, edges, routing, hub, and human-review edges.
 
@@ -172,7 +189,7 @@ def load_agent_models(root):
     try:
         if str(root) not in sys.path:
             sys.path.insert(0, str(root))
-        from config import Config  # imported lazily; requires the project config
+        from tools.config import Config  # imported lazily; requires the project config
     except Exception:
         return {}
 
@@ -773,7 +790,7 @@ def main():
     graph["trace"] = build_trace(routing, hub)
     graph["project"] = PROJECT
 
-    out = root / "docs" / "graph-ui" / "strategic-workflow-graph.html"
+    out = root / load_reports_dir(root) / "strategic-workflow-graph.html"
     if len(sys.argv) == 3 and sys.argv[1] == "--out":
         out = Path(sys.argv[2])
 

@@ -9,7 +9,7 @@ import queue
 import threading
 
 from ddgs import DDGS
-from config import Config
+from tools.config import Config
 
 # ``ddgs`` (via primp/TLS impersonation) can hang indefinitely on rate-limited
 # or challenged responses, so run the search on a daemon thread with a hard
