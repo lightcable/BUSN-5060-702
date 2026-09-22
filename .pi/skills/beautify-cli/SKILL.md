@@ -25,7 +25,7 @@ python .pi/skills/beautify-cli/scripts/generate_cli_report.py
 python .pi/skills/beautify-cli/scripts/generate_cli_report.py --input cli.log --out custom.html
 ```
 
-- Default output: `docs/cli-report/strategic-workflow-run.html`
+- Default output: `reports/strategic-workflow-run.html`
 - Open the file in a browser to view the report.
 
 ## What it does

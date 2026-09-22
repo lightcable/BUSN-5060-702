@@ -11,3 +11,4 @@ python-dotenv>=1.0.0
 requests
 # For VS Code debugging
 debugpy
+pytest

@@ -40,7 +40,7 @@ Execute all skills in the `.pi/skills/` directory accordingly
 - **Purpose:** beautify the workflow's CLI output into a styled, self-contained HTML report. `python main.py` now does this automatically (single executable); this skill converts an existing log (`--input`) or re-renders one.
 - **Location:** `.pi/skills/beautify-cli/` (`SKILL.md` + `scripts/generate_cli_report.py`); shared logic in `reporting.py`.
 - **Run:** `python .pi/skills/beautify-cli/scripts/generate_cli_report.py [--input FILE] [--out PATH]`
-- **Default output:** `docs/cli-report/strategic-workflow-run.html`
+- **Default output:** `reports/strategic-workflow-run.html`
 - **When:** to beautify an existing log file, or after `python main.py` when a report needs re-rendering.
 
 ## Guidance

@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Default report output path (relative to the repo root when running main.py).
-DEFAULT_OUT = Path("docs") / "cli-report" / "strategic-workflow-run.html"
+DEFAULT_OUT = Path("reports") / "strategic-workflow-run.html"
 
 
 def parse_output(text):
