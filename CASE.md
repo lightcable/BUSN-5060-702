@@ -58,5 +58,5 @@ Our company is a major U.S. cable operator (multiple-system operator, MSO) runni
 - https://www.cmcsa.com/news-releases/news-release-details/comcast-reports-2nd-quarter-2026-results
 
 ## Project Blueprint
-
-Use the `.pi/AGENTS.md` file as a blueprint for development.
+- Use `./README.md` as project blueprint
+- Use `.pi/AGENTS.md` as software development best practice
